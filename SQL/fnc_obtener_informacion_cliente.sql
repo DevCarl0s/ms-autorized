@@ -1,5 +1,4 @@
- DROP FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb);
-
+DROP FUNCTION IF EXISTS gnv.fnc_obtener_informacion_cliente(jsonb);
 CREATE OR REPLACE FUNCTION gnv.fnc_obtener_informacion_cliente(i_datos jsonb)
  RETURNS jsonb
  LANGUAGE plpgsql
@@ -99,4 +98,7 @@ END;
 $function$
 ;
 
+-- Permissions
 
+ALTER FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb) OWNER TO cdo4406;
+GRANT ALL ON FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb) TO cdo4406;
