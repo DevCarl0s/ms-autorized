@@ -1,7 +1,8 @@
 package entidades_autorizacion
 
 type PeticionAutorizacionRecaudo struct {
-	TipoAutorizacion string `json:"tipo_autorizacion"`
+	TipoAutorizacion string `json:"medio_autorizacion"`
 	EdsId            int    `json:"eds_id"`
-	Autorizacion     string `json:"autorizacion"`
+	Autorizacion     string `json:"data"`
+	Cara             int    `json:"cara"`
 }
