@@ -33,6 +33,7 @@ func (OIC *ObtenerInformacionCliente) Consultar(datos *entidades_autorizacion.Pe
 	var cliente *entidades_autorizacion.InformacionCliente
 	err = json.Unmarshal(bytes, &cliente)
 	if err != nil {
+		errorStr = "Error mapear respuesta a estructura"
 		return &entidades_autorizacion.InformacionCliente{Success: false, Message: errorStr}, err
 	}
 

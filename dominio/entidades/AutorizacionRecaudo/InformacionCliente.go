@@ -69,11 +69,15 @@ type RecaudoVehiculo struct {
 	UsuarioModificacionID *int    `json:"usuario_modificacion_id"`
 }
 
-type RecaudoVehiculosConcepto struct {
+type Concepto struct {
 	Valor                       float64 `json:"valor"`
 	IDConceptoVehiculo          int     `json:"id_concepto_vehiculo"`
 	ConceptosRecaudosIDConcepto int     `json:"conceptos_recaudos_id_concepto"`
 	RecaudosVehiculosIDRecaudo  int     `json:"recaudos_vehiculos_id_recaudo_vehiculo"`
+}
+type RecaudoVehiculosConcepto struct {
+	Concepto        Concepto        `json:"concepto"`
+	ConceptoRecaudo ConceptoRecaudo `json:"concepto_recaudo"`
 }
 
 type VehiculoIdentificador struct {
@@ -116,11 +120,10 @@ type ClienteData struct {
 	ClienteDestino             ClienteDestino             `json:"cliente_destino"`
 	ClienteTipoDestino         ClienteTipoDestino         `json:"cliente_tipo_destino"`
 	RecaudoVehiculo            RecaudoVehiculo            `json:"recaudo_vehiculo"`
-	RecaudoVehiculosConcepto   RecaudoVehiculosConcepto   `json:"recaudo_vehiculos_conceptos"`
+	RecaudoVehiculosConcepto   []RecaudoVehiculosConcepto `json:"recaudo_vehiculos_conceptos"`
 	VehiculoIdentificador      VehiculoIdentificador      `json:"vehiculo_identificador"`
 	TipoIdentificacionVehiculo TipoIdentificacionVehiculo `json:"tipo_identificacion_vehiculo"`
 	VehiculoPropiedades        VehiculoPropiedades        `json:"vehiculo_propiedades"`
-	ConceptoRecaudo            ConceptoRecaudo            `json:"concepto_recaudo"`
 }
 
 type InformacionCliente struct {
