@@ -22,8 +22,8 @@ BEGIN
 		);
 	END IF;
 
-	i_autorizacion_valor 	:= 	( i_datos ->> 'autorizacion' ) :: text;
-	i_autorizacion_tipo 	:=	( i_datos ->> 'tipo_autorizacion' ) :: text;
+	i_autorizacion_valor 	:= 	( i_datos ->> 'data' ) :: text;
+	i_autorizacion_tipo 	:=	( i_datos ->> 'medio_autorizacion' ) :: text;
 	i_eds_id				:=  ( i_datos ->> 'eds_id' ) :: int;
 
     SELECT INTO resultado 
