@@ -1,4 +1,5 @@
-DROP FUNCTION IF EXISTS gnv.fnc_obtener_informacion_cliente(jsonb);
+-- DROP FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb);
+
 CREATE OR REPLACE FUNCTION gnv.fnc_obtener_informacion_cliente(i_datos jsonb)
  RETURNS jsonb
  LANGUAGE plpgsql
@@ -33,12 +34,29 @@ BEGIN
 				'cliente_vehiculo', to_jsonb(cv.*),
 				'cliente_destino', to_jsonb(tcd.*),
 				'cliente_tipo_destino', to_jsonb(tctd.*),
-                'recaudo_vehiculo', to_jsonb(rv.*),
-                'recaudo_vehiculos_conceptos', to_jsonb(rvc.*),
+                'informacion_recaudo', COALESCE((
+				    SELECT JSONB_BUILD_OBJECT(
+				            'recaudo_vehiculo', to_jsonb(rv.*),
+				            'recaudo_vehiculo_conceptos', (
+				                SELECT JSON_AGG(
+				                    JSONB_BUILD_OBJECT(
+				                        'recaudo_vehiculo_concepto', to_jsonb(rvc.*),
+				                        'concepto_recaudo', to_jsonb(cr.*)
+				                    )
+				                )
+				                FROM gnv.recaudos_vehiculos_conceptos rvc
+				                INNER JOIN gnv.conceptos_recaudos cr
+				                    ON cr.id_concepto = rvc.conceptos_recaudos_id_concepto
+				                WHERE rvc.recaudos_vehiculos_id_recaudo_vehiculo = rv.id_recaudo_vehiculo
+				            )
+				        )
+				    
+				    FROM gnv.recaudos_vehiculos rv
+				    WHERE rv.vehiculos_id_vehiculo = v.id_vehiculo
+				), '{}'),
 				'vehiculo_identificador', to_jsonb(vi.*),
 				'tipo_identificacion_vehiculo', to_jsonb(ttiv.*),
-                'vehiculo_propiedades', to_jsonb(vp.*),
-               'concepto_recaudo', to_jsonb(cr.*)
+                'vehiculo_propiedades', to_jsonb(vp.*)
             )
         )
     FROM gnv.vehiculos v
@@ -54,12 +72,6 @@ BEGIN
 		ON tcd.tbl_clientes_id = tc.id
 	INNER JOIN clientes_fidelizacion.tbl_clientes_tipos_destinos tctd 
 		ON tctd.id_destino = tcd.tbl_clientes_tipos_destinos_id_destino
-    INNER JOIN gnv.recaudos_vehiculos rv 
-        ON rv.vehiculos_id_vehiculo = v.id_vehiculo 
-    INNER JOIN gnv.recaudos_vehiculos_conceptos rvc 
-        ON rvc.recaudos_vehiculos_id_recaudo_vehiculo = rv.id_recaudo_vehiculo
-	INNER JOIN gnv.conceptos_recaudos cr
-		ON cr.id_concepto = rvc.conceptos_recaudos_id_concepto
     INNER JOIN gnv.vehiculos_identificadores vi
         ON vi.vehiculos_id_vehiculo = v.id_vehiculo
     INNER JOIN public.tbl_tipos_identificacion_vehiculo ttiv 
@@ -101,4 +113,5 @@ $function$
 -- Permissions
 
 ALTER FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb) OWNER TO cdo4406;
+GRANT ALL ON FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb) TO public;
 GRANT ALL ON FUNCTION gnv.fnc_obtener_informacion_cliente(jsonb) TO cdo4406;
